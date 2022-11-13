@@ -10,6 +10,11 @@ export interface User {
   profileImageUrl?: string;
 }
 
+export interface UserLoginCredentials {
+  email: string;
+  password: string;
+}
+
 // User data when creating the user (no id column)
 export type UserSigningUp = Omit<User, "id">;
 

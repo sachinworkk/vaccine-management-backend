@@ -1,7 +1,7 @@
 import UserModel from "../models/UserModel";
-import { UserSigningUp } from "../domain/User";
+import { UserSigningUp, UserLoginCredentials } from "../domain/User";
 
-import { hashPassword } from "./../utils/authUtil";
+import { hashPassword, verifyPassword } from "./../utils/authUtil";
 
 export const createUser = async (userData: UserSigningUp) => {
   const hashedPassword = await hashPassword(userData.password);
@@ -14,5 +14,23 @@ export const createUser = async (userData: UserSigningUp) => {
   return {
     data: insertedData,
     message: "User created successfully",
+  };
+};
+
+export const signInUser = async (userCredentials: UserLoginCredentials) => {
+  const retrievedUser = await UserModel.getUserByEmail(userCredentials.email);
+
+  const passwordVerification = await verifyPassword(
+    userCredentials.password,
+    retrievedUser.password
+  );
+
+  if (!passwordVerification) throw new Error("Password does not match");
+
+  return {
+    data: {
+      ...retrievedUser,
+    },
+    message: "User logged in successfully",
   };
 };

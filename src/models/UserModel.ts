@@ -16,6 +16,12 @@ class UserModel {
 
     return newUser;
   };
+
+  public static getUserByEmail = async (email: string) => {
+    const user = await db("users").where({ email }).first();
+
+    return user;
+  };
 }
 
 export default UserModel;
