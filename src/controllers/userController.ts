@@ -37,10 +37,36 @@ export const signIn = async (
   const userLoginCredentials = { ...req.body } as UserLoginCredentials;
 
   try {
-    const signedInUser = await signInUser(userLoginCredentials);
-    res.status(200);
-    res.send(signedInUser);
+    const { data, message, accessToken, refreshToken } = await signInUser(
+      userLoginCredentials
+    );
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 300000,
+      httpOnly: true,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 3.154e10,
+      httpOnly: true,
+    });
+
+    res.status(200).send({ data, message });
   } catch (error) {
     next(error);
   }
+};
+
+/**
+ * Signs in the user.
+ * @param  {Request} req
+ * @param  {Response} res
+ */
+export const signOut = async (req: Request, res: Response) => {
+  res.cookie("accessToken", "", {
+    maxAge: 0,
+    httpOnly: true,
+  });
+
+  return res.send({ success: true });
 };

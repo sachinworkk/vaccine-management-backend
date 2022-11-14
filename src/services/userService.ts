@@ -1,7 +1,8 @@
 import UserModel from "../models/UserModel";
+import RefreshTokenModel from "../models/RefreshTokenModel";
 import { UserSigningUp, UserLoginCredentials } from "../domain/User";
 
-import { hashPassword, verifyPassword } from "./../utils/authUtil";
+import { signJWT, hashPassword, verifyPassword } from "./../utils/authUtil";
 
 export const createUser = async (userData: UserSigningUp) => {
   const hashedPassword = await hashPassword(userData.password);
@@ -18,19 +19,46 @@ export const createUser = async (userData: UserSigningUp) => {
 };
 
 export const signInUser = async (userCredentials: UserLoginCredentials) => {
-  const retrievedUser = await UserModel.getUserByEmail(userCredentials.email);
+  const userSigningIn = await UserModel.getUserByEmail(userCredentials.email);
+
+  if (!userSigningIn) throw new Error("User does not exist");
 
   const passwordVerification = await verifyPassword(
     userCredentials.password,
-    retrievedUser.password
+    userSigningIn.password
   );
 
   if (!passwordVerification) throw new Error("Password does not match");
 
+  const accessToken = signJWT(
+    {
+      id: userSigningIn.id,
+      name: userSigningIn.name,
+      email: userSigningIn.email,
+    },
+    process.env.ACCESS_TOKEN_PRIVATE as string,
+    "5s"
+  );
+
+  const refreshToken = signJWT(
+    { userId: userSigningIn.id },
+    process.env.REFRESH_TOKEN_PRIVATE as string,
+    "1y"
+  );
+
+  await RefreshTokenModel.createRefreshToken({
+    token: refreshToken,
+    user_id: userSigningIn.id,
+    expires_at: new Date(Date.now() + 120),
+  });
+
+  // create access token
   return {
     data: {
-      ...retrievedUser,
+      ...userSigningIn,
     },
+    accessToken,
+    refreshToken,
     message: "User logged in successfully",
   };
 };
