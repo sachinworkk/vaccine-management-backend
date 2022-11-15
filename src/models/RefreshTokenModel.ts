@@ -6,7 +6,7 @@ class RefreshTokenModel {
   public static async createRefreshToken(refreshTokenData: RefreshTokenData) {
     const createdRefreshToken = await db("refresh_token").insert(
       refreshTokenData,
-      ["token", "user_id", "expires_at"]
+      ["token", "user_id"]
     );
 
     return createdRefreshToken;

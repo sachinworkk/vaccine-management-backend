@@ -7,7 +7,6 @@ exports.up = function (knex) {
     table.increments("id").primary();
     table.string("token", 1000).notNullable();
     table.integer("user_id").notNullable().references("id").inTable("users");
-    table.datetime("expires_at").notNullable();
   });
 };
 

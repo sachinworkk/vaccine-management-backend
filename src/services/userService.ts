@@ -41,7 +41,11 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
   );
 
   const refreshToken = signJWT(
-    { userId: userSigningIn.id },
+    {
+      userId: userSigningIn.id,
+      name: userSigningIn.name,
+      email: userSigningIn.email,
+    },
     process.env.REFRESH_TOKEN_PRIVATE as string,
     "1y"
   );
@@ -49,10 +53,8 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
   await RefreshTokenModel.createRefreshToken({
     token: refreshToken,
     user_id: userSigningIn.id,
-    expires_at: new Date(Date.now() + 120),
   });
 
-  // create access token
   return {
     data: {
       ...userSigningIn,

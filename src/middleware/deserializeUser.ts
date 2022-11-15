@@ -50,7 +50,7 @@ export const deserializeUser = async (
   );
 
   res.cookie("accessToken", newAccessToken, {
-    maxAge: 30000,
+    maxAge: 300000,
     httpOnly: true,
   });
 

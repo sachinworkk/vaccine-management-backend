@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(deserializeUser);
-app.use(userRoutes, requireUser);
+app.use(userRoutes);
 app.get("/product", requireUser, (req, res, next) => {
   // @ts-ignore
   res.send(req.user);
