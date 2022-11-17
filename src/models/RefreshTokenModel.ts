@@ -4,7 +4,7 @@ import { RefreshTokenData } from "./../domain/RefreshToken";
 
 class RefreshTokenModel {
   public static async createRefreshToken(refreshTokenData: RefreshTokenData) {
-    const createdRefreshToken = await db("refresh_token").insert(
+    const createdRefreshToken = await db("refresh_tokens").insert(
       refreshTokenData,
       ["token", "user_id"]
     );
@@ -13,9 +13,9 @@ class RefreshTokenModel {
   }
 
   public static async getRefreshToken(refreshTokenToGet: string) {
-    const refreshToken = await db("refresh_token")
+    const refreshToken = await db("refresh_tokens")
       .where({ token: refreshTokenToGet })
-      .select(["id", "refresh_token", "user_id"])
+      .select(["id", "refresh_tokens", "user_id"])
       .first();
 
     return refreshToken;
