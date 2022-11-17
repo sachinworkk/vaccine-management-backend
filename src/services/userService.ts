@@ -64,3 +64,7 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
     message: "User logged in successfully",
   };
 };
+
+export const signOutUser = async (refreshToken: string) => {
+  return await RefreshTokenModel.deleteRefreshToken(refreshToken);
+};

@@ -20,6 +20,14 @@ class RefreshTokenModel {
 
     return refreshToken;
   }
+
+  public static async deleteRefreshToken(refreshTokenToDel: string) {
+    const isRefreshTokenDeleted = await db("refresh_tokens")
+      .where({ token: refreshTokenToDel })
+      .del([]);
+
+    return isRefreshTokenDeleted;
+  }
 }
 
 export default RefreshTokenModel;

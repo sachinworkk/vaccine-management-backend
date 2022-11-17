@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { UserSigningUp, UserLoginCredentials } from "./../domain/User";
 
-import { createUser, signInUser } from "../services/userService";
+import { createUser, signInUser, signOutUser } from "../services/userService";
 
 /**
  * Signs up the user.
@@ -63,10 +63,20 @@ export const signIn = async (
  * @param  {Response} res
  */
 export const signOut = async (req: Request, res: Response) => {
-  res.cookie("accessToken", "", {
-    maxAge: 0,
-    httpOnly: true,
-  });
+  const { refreshToken } = req.cookies;
+  const isRefreshTokenDeleted = await signOutUser(refreshToken);
 
-  return res.send({ success: true });
+  if (isRefreshTokenDeleted) {
+    res.cookie("accessToken", "", {
+      maxAge: 0,
+      httpOnly: true,
+    });
+
+    res.cookie("refreshToken", "", {
+      maxAge: 0,
+      httpOnly: true,
+    });
+
+    res.send({ success: true });
+  }
 };
