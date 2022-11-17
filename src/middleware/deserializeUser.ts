@@ -1,6 +1,8 @@
 import { signJWT, verifyJWT } from "./../utils/authUtil";
 import { NextFunction, Request, Response } from "express";
 
+import { UserPayloadDecodedFromToken } from "./../domain/UserPayloadDecodedFromToken";
+
 import RefreshTokenModel from "../models/RefreshTokenModel";
 
 export const deserializeUser = async (
@@ -27,15 +29,6 @@ export const deserializeUser = async (
     return next();
   }
 
-  const { payload: refresh } =
-    expired && refreshToken
-      ? verifyJWT(refreshToken, process.env.REFRESH_TOKEN_PUBLIC as string)
-      : { payload: null };
-
-  if (!refresh) {
-    return next();
-  }
-
   // @ts-ignore
   const session = await RefreshTokenModel.getRefreshToken(refreshToken);
 
@@ -43,8 +36,17 @@ export const deserializeUser = async (
     return next();
   }
 
+  const { payload: refreshTokenDecodedPayload } =
+    expired && refreshToken
+      ? verifyJWT(refreshToken, process.env.REFRESH_TOKEN_PUBLIC as string)
+      : { payload: null };
+
+  if (!refreshTokenDecodedPayload) {
+    return next();
+  }
+
   const newAccessToken = signJWT(
-    session,
+    refreshTokenDecodedPayload as UserPayloadDecodedFromToken,
     process.env.ACCESS_TOKEN_PRIVATE as string,
     "5s"
   );
