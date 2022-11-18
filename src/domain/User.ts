@@ -7,7 +7,7 @@ export interface User {
   email: string;
   password: string;
   address: string;
-  profileImageUrl?: string;
+  profile_image_url?: string;
 }
 
 export interface UserLoginCredentials {

@@ -29,7 +29,6 @@ export const deserializeUser = async (
     return next();
   }
 
-  // @ts-ignore
   const session = await RefreshTokenModel.getRefreshToken(refreshToken);
 
   if (!session) {
@@ -45,8 +44,11 @@ export const deserializeUser = async (
     return next();
   }
 
+  const { iat, exp, ...userPayload } =
+    refreshTokenDecodedPayload as UserPayloadDecodedFromToken;
+
   const newAccessToken = signJWT(
-    refreshTokenDecodedPayload as UserPayloadDecodedFromToken,
+    userPayload,
     process.env.ACCESS_TOKEN_PRIVATE as string,
     "5s"
   );

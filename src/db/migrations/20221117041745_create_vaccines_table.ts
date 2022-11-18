@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("description").notNullable();
     table.integer("number_of_doses").notNullable();
     table.boolean("is_mandatory").defaultTo(false);
-    table.string("vaccine_image_url");
+    table.string("vaccine_image_url").defaultTo("");
     table.enum("stage", [
       "Exploratory",
       "Preclinical",

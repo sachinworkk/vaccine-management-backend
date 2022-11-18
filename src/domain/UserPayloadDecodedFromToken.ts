@@ -8,4 +8,4 @@ export interface TokenPayload {
 }
 
 // User data when creating the user (no id column)
-export type UserPayloadDecodedFromToken = Omit<TokenPayload, "iat" | "exp">;
+export type UserPayloadDecodedFromToken = TokenPayload;
