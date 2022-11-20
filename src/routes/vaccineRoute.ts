@@ -13,8 +13,11 @@ router.post(
   (req: Request, res: Response, next: NextFunction) =>
     vaccineController.createVaccines(req as RequestWithUser, res, next)
 );
-router.put("/:id", (req: Request, res: Response, next: NextFunction) =>
-  vaccineController.updateVaccines(req as RequestWithUser, res, next)
+router.put(
+  "/:id",
+  storage.single("vaccineImage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    vaccineController.updateVaccines(req as RequestWithUser, res, next)
 );
 router.delete("/:id", vaccineController.deleteVaccines);
 

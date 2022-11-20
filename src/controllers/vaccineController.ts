@@ -39,8 +39,7 @@ export const createVaccines = async (
   next: NextFunction
 ) => {
   let imageURL;
-  if (req.file) {
-    // @ts-ignore
+  if (req?.file) {
     imageURL = req?.file?.path || "";
   }
   // @ts-ignore
@@ -65,10 +64,16 @@ export const updateVaccines = async (
   res: Response,
   next: NextFunction
 ) => {
+  let imageURL;
+  if (req?.file) {
+    imageURL = req?.file?.path || "";
+  }
+
   // @ts-ignore
   const updatedVaccinePayload = {
     ...req.body,
     updated_by: req.user.userId,
+    vaccine_image_url: imageURL,
   } as VaccinePayload;
 
   try {

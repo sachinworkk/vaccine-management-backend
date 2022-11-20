@@ -26,6 +26,18 @@ export const updateVaccine = async (
   vaccinePayload: VaccinePayload,
   vaccineId: string
 ) => {
+  if (vaccinePayload?.vaccine_image_url) {
+    const uploadedVaccineImageURL = await uploadImage(
+      vaccinePayload?.vaccine_image_url,
+      "vaccines"
+    );
+
+    vaccinePayload = {
+      ...vaccinePayload,
+      vaccine_image_url: uploadedVaccineImageURL,
+    };
+  }
+
   const updatedVaccine = await VaccineModel.updateVaccine(
     vaccinePayload,
     vaccineId
