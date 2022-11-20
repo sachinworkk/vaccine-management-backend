@@ -38,10 +38,16 @@ export const createVaccines = async (
   res: Response,
   next: NextFunction
 ) => {
+  let imageURL;
+  if (req.file) {
+    // @ts-ignore
+    imageURL = req?.file?.path || "";
+  }
   // @ts-ignore
   const vaccinePayload = {
     ...req.body,
     created_by: req.user.userId,
+    vaccine_image_url: imageURL,
   } as VaccinePayload;
 
   try {

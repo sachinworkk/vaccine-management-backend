@@ -36,6 +36,16 @@ class VaccineModel {
     return updatedVaccine;
   };
 
+  public static getVaccineById = async (vaccineId: string) => {
+    const retrievedVaccine: VaccinePayload = await db
+      .table("vaccines")
+      .select("*")
+      .where({ id: vaccineId })
+      .first();
+
+    return retrievedVaccine;
+  };
+
   public static deleteVaccine = async (vaccineId: string) => {
     const isVaccineDeleted = await db("vaccines")
       .where({ id: vaccineId })

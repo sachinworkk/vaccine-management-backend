@@ -1,9 +1,20 @@
+import uploadImage, { deleteImage } from "../utils/imageUtil";
 import VaccineModel from "../models/VaccineModel";
 
 import { VaccinePayload } from "./../domain/Vaccine";
 
 export const createVaccine = async (vaccinePayload: VaccinePayload) => {
-  const createdVaccine = await VaccineModel.createVaccine(vaccinePayload);
+  let uploadedVaccineImageURL = "";
+  if (vaccinePayload?.vaccine_image_url) {
+    uploadedVaccineImageURL = await uploadImage(
+      vaccinePayload?.vaccine_image_url,
+      "vaccines"
+    );
+  }
+  const createdVaccine = await VaccineModel.createVaccine({
+    ...vaccinePayload,
+    vaccine_image_url: uploadedVaccineImageURL,
+  });
 
   return {
     data: createdVaccine,
@@ -27,5 +38,16 @@ export const updateVaccine = async (
 };
 
 export const deleteVaccine = async (vaccineId: string) => {
-  return await VaccineModel.deleteVaccine(vaccineId);
+  const fetchedVaccine = await VaccineModel.getVaccineById(vaccineId);
+
+  await VaccineModel.deleteVaccine(vaccineId);
+
+  if (fetchedVaccine?.vaccine_image_url) {
+    await deleteImage(fetchedVaccine?.vaccine_image_url, "vaccines");
+  }
+
+  return {
+    data: "Vaccine deleted successfully",
+    status: 200,
+  };
 };
