@@ -1,8 +1,8 @@
-import { RequestWithUser } from "./../domain/RequestWIthUser";
+import { RequestWithUser } from "../types/requestWIthUser";
 import { Router, Request, Response, NextFunction } from "express";
 import { vaccineController } from "../controllers";
 
-import storage from "../handlers/multer";
+import storage from "../configs/multer";
 
 const router = Router();
 

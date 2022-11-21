@@ -1,6 +1,6 @@
 import db from "../db/db";
 
-import { UserSigningUp } from "./../domain/User";
+import { UserSigningUp } from "../types/user";
 
 class UserModel {
   public static createUser = async (user: UserSigningUp) => {

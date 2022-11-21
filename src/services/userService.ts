@@ -1,6 +1,6 @@
-import UserModel from "../models/UserModel";
-import RefreshTokenModel from "../models/RefreshTokenModel";
-import { UserSigningUp, UserLoginCredentials } from "../domain/User";
+import UserModel from "../models/userModel";
+import RefreshTokenModel from "../models/refreshTokenModel";
+import { UserSigningUp, UserLoginCredentials } from "../types/user";
 
 import { signJWT, hashPassword, verifyPassword } from "./../utils/authUtil";
 

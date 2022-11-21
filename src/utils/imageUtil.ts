@@ -1,5 +1,5 @@
 import { getImageCloudinaryId } from "./fileUtil";
-import cloudinary from "../handlers/cloudinary";
+import cloudinary from "../configs/cloudinary";
 
 import fs from "fs";
 

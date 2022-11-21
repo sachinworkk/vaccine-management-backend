@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { UserSigningUp, UserLoginCredentials } from "./../domain/User";
+import { UserSigningUp, UserLoginCredentials } from "../types/user";
 
 import { createUser, signInUser, signOutUser } from "../services/userService";
 

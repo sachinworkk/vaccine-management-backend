@@ -5,8 +5,8 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoute";
 import vaccineRoutes from "./routes/vaccineRoute";
 
-import { requireUser } from "./middleware/requireUser";
-import { deserializeUser } from "./middleware/deserializeUser";
+import { requireUser } from "./middlewares/requireUser";
+import { deserializeUser } from "./middlewares/deserializeUser";
 
 const app = express();
 

@@ -1,9 +1,9 @@
 import { signJWT, verifyJWT } from "./../utils/authUtil";
 import { NextFunction, Request, Response } from "express";
 
-import { UserPayloadDecodedFromToken } from "./../domain/UserPayloadDecodedFromToken";
+import { UserPayloadDecodedFromToken } from "../types/userPayloadDecodedFromToken";
 
-import RefreshTokenModel from "../models/RefreshTokenModel";
+import RefreshTokenModel from "../models/refreshTokenModel";
 
 export const deserializeUser = async (
   req: Request,

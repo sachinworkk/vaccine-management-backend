@@ -1,6 +1,6 @@
 import db from "../db/db";
 
-import { VaccinePayload } from "./../domain/Vaccine";
+import { VaccinePayload } from "../types/vaccine";
 
 class VaccineModel {
   public static createVaccine = async (vaccine: VaccinePayload) => {

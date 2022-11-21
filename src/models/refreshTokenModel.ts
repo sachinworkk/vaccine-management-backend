@@ -1,6 +1,6 @@
 import db from "../db/db";
 
-import { RefreshTokenData } from "./../domain/RefreshToken";
+import { RefreshTokenData } from "../types/refreshToken";
 
 class RefreshTokenModel {
   public static async createRefreshToken(refreshTokenData: RefreshTokenData) {

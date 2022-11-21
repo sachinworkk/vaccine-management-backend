@@ -1,7 +1,7 @@
 import uploadImage, { deleteImage } from "../utils/imageUtil";
-import VaccineModel from "../models/VaccineModel";
+import VaccineModel from "../models/vaccineModel";
 
-import { VaccinePayload } from "./../domain/Vaccine";
+import { VaccinePayload } from "../types/vaccine";
 
 export const createVaccine = async (vaccinePayload: VaccinePayload) => {
   let uploadedVaccineImageURL = "";

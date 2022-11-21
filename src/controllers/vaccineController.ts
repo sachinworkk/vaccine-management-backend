@@ -1,5 +1,5 @@
-import { RequestWithUser } from "./../domain/RequestWIthUser";
-import { VaccinePayload } from "./../domain/Vaccine";
+import { RequestWithUser } from "../types/requestWIthUser";
+import { VaccinePayload } from "../types/vaccine";
 import { Request, Response, NextFunction } from "express";
 
 import {
