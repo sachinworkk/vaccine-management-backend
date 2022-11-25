@@ -36,6 +36,20 @@ class VaccineModel {
     return updatedVaccine;
   };
 
+  public static getAllVaccines = async () => {
+    const allVaccines = await db("vaccines").select([
+      "id",
+      "name",
+      "description",
+      "number_of_doses",
+      "is_mandatory",
+      "stage",
+      "vaccine_image_url",
+    ]);
+
+    return allVaccines;
+  };
+
   public static getVaccineById = async (vaccineId: string) => {
     const retrievedVaccine: VaccinePayload = await db
       .table("vaccines")

@@ -1,31 +1,64 @@
 import { RequestWithUser } from "../types/requestWIthUser";
 import { VaccinePayload } from "../types/vaccine";
+
 import { Request, Response, NextFunction } from "express";
+
+import cloudinary from "../configs/cloudinary";
 
 import {
   createVaccine,
   updateVaccine,
   deleteVaccine,
+  getAllVaccines,
 } from "../services/vaccineService";
+
+import sharp from "sharp";
+import streamifier from "streamifier";
 
 /**
  * Get vaccines.
  * @param  {Request} req
  * @param  {Response} res
  */
-export const getVaccines = (
+export const getVaccines = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    res.status(200);
+    const allVaccines = await getAllVaccines();
 
-    // @ts-ignore
-    res.send(req.user);
+    res.send({
+      data: allVaccines,
+    });
   } catch (error) {
     next(error);
   }
+};
+
+const uploadImageToCloudinary = async (req: Request) => {
+  if (!req?.file) {
+    return "";
+  }
+
+  const imageData = await sharp(req?.file?.buffer)
+    .resize({
+      width: 400,
+      height: 400,
+    })
+    .toBuffer();
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "vaccine-management/vaccines" },
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result?.secure_url || "");
+      }
+    );
+
+    streamifier.createReadStream(imageData).pipe(stream);
+  });
 };
 
 /**
@@ -38,11 +71,8 @@ export const createVaccines = async (
   res: Response,
   next: NextFunction
 ) => {
-  let imageURL;
-  if (req?.file) {
-    imageURL = req?.file?.path || "";
-  }
-  // @ts-ignore
+  const imageURL = await uploadImageToCloudinary(req);
+
   const vaccinePayload = {
     ...req.body,
     created_by: req.user.userId,
@@ -64,9 +94,10 @@ export const updateVaccines = async (
   res: Response,
   next: NextFunction
 ) => {
-  let imageURL;
-  if (req?.file) {
-    imageURL = req?.file?.path || "";
+  let imageURL = req.body?.vaccine_image_url || "";
+
+  if (req.file) {
+    imageURL = await uploadImageToCloudinary(req);
   }
 
   // @ts-ignore
