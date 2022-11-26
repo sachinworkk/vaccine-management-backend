@@ -1,11 +1,20 @@
 import UserModel from "../models/userModel";
 import RefreshTokenModel from "../models/refreshTokenModel";
-import { UserSigningUp, UserLoginCredentials } from "../types/user";
+
+import { JWT_SIGN_AGE, NUMBER_OF_SALT } from "./../constants/constants";
 
 import { signJWT, hashPassword, verifyPassword } from "./../utils/authUtil";
 
+import { UserSigningUp, UserLoginCredentials } from "../types/user";
+
+/**
+ * Create a new user.
+ *
+ * @param userData {Object}
+ * @returns {Object}
+ */
 export const createUser = async (userData: UserSigningUp) => {
-  const hashedPassword = await hashPassword(userData.password);
+  const hashedPassword = await hashPassword(userData.password, NUMBER_OF_SALT);
 
   const insertedData = await UserModel.createUser({
     ...userData,
@@ -18,6 +27,12 @@ export const createUser = async (userData: UserSigningUp) => {
   };
 };
 
+/**
+ * Sign in a new user.
+ *
+ * @param userCredentials {Object}
+ * @returns {Object}
+ */
 export const signInUser = async (userCredentials: UserLoginCredentials) => {
   const userSigningIn = await UserModel.getUserByEmail(userCredentials.email);
 
@@ -32,12 +47,12 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
 
   const accessToken = signJWT(
     {
-      id: userSigningIn.id,
+      userId: userSigningIn.id,
       name: userSigningIn.name,
       email: userSigningIn.email,
     },
     process.env.ACCESS_TOKEN_PRIVATE as string,
-    "5s"
+    JWT_SIGN_AGE.ACCESS_TOKEN
   );
 
   const refreshToken = signJWT(
@@ -47,7 +62,7 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
       email: userSigningIn.email,
     },
     process.env.REFRESH_TOKEN_PRIVATE as string,
-    "1y"
+    JWT_SIGN_AGE.REFRESH_TOKEN
   );
 
   await RefreshTokenModel.createRefreshToken({
@@ -65,6 +80,12 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
   };
 };
 
+/**
+ * Sign out the user.
+ *
+ * @param refreshToken
+ * @returns {Promise}
+ */
 export const signOutUser = async (refreshToken: string) => {
   return await RefreshTokenModel.deleteRefreshToken(refreshToken);
 };

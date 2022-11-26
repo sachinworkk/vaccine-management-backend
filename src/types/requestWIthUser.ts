@@ -7,8 +7,5 @@ export interface RequestWithUser extends Request {
     userId: number;
     name: string;
     email: string;
-    file?: {
-      vaccineImage: "";
-    };
   };
 }

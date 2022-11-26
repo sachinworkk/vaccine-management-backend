@@ -1,9 +1,4 @@
-import { RequestWithUser } from "../types/requestWIthUser";
-import { VaccinePayload } from "../types/vaccine";
-
 import { Request, Response, NextFunction } from "express";
-
-import cloudinary from "../configs/cloudinary";
 
 import {
   createVaccine,
@@ -12,13 +7,19 @@ import {
   getAllVaccines,
 } from "../services/vaccineService";
 
-import sharp from "sharp";
-import streamifier from "streamifier";
+import { VaccinePayload } from "../types/vaccine";
+import { RequestWithUser } from "../types/requestWIthUser";
+
+import { STATUS_CODE, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
+
+import { uploadImageToCloudinary } from "../utils/cloudinaryUtil";
 
 /**
- * Get vaccines.
+ * Get all vaccines.
+ *
  * @param  {Request} req
  * @param  {Response} res
+ * @param  {NextFunction} next
  */
 export const getVaccines = async (
   req: Request,
@@ -36,42 +37,22 @@ export const getVaccines = async (
   }
 };
 
-const uploadImageToCloudinary = async (req: Request) => {
-  if (!req?.file) {
-    return "";
-  }
-
-  const imageData = await sharp(req?.file?.buffer)
-    .resize({
-      width: 400,
-      height: 400,
-    })
-    .toBuffer();
-
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "vaccine-management/vaccines" },
-      (error, result) => {
-        if (error) reject(error);
-        resolve(result?.secure_url || "");
-      }
-    );
-
-    streamifier.createReadStream(imageData).pipe(stream);
-  });
-};
-
 /**
- * Create vaccine.
+ * Create a vaccine.
+ *
  * @param  {Request} req
  * @param  {Response} res
+ * @param  {NextFunction} next
  */
 export const createVaccines = async (
   req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
-  const imageURL = await uploadImageToCloudinary(req);
+  const imageURL = await uploadImageToCloudinary(
+    req,
+    IMAGE_UPLOAD_FOLDERS.VACCINE
+  );
 
   const vaccinePayload = {
     ...req.body,
@@ -81,7 +62,7 @@ export const createVaccines = async (
 
   try {
     const createdVaccine = await createVaccine(vaccinePayload);
-    res.status(200);
+    res.status(STATUS_CODE.SUCCESS);
 
     res.send(createdVaccine);
   } catch (error) {
@@ -89,6 +70,13 @@ export const createVaccines = async (
   }
 };
 
+/**
+ * Update a vaccine.
+ *
+ * @param  {Request} req
+ * @param  {Response} res
+ * @param  {NextFunction} next
+ */
 export const updateVaccines = async (
   req: RequestWithUser,
   res: Response,
@@ -97,10 +85,9 @@ export const updateVaccines = async (
   let imageURL = req.body?.vaccine_image_url || "";
 
   if (req.file) {
-    imageURL = await uploadImageToCloudinary(req);
+    imageURL = await uploadImageToCloudinary(req, "vaccines");
   }
 
-  // @ts-ignore
   const updatedVaccinePayload = {
     ...req.body,
     updated_by: req.user.userId,
@@ -112,23 +99,30 @@ export const updateVaccines = async (
       updatedVaccinePayload,
       req.params.id
     );
-    res.status(200);
 
-    res.send(updatedVaccine);
+    res.status(STATUS_CODE.SUCCESS).send(updatedVaccine);
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * Create vaccine.
+ * Delete a vaccine.
+ *
  * @param  {Request} req
  * @param  {Response} res
+ * @param  {NextFunction} next
  */
-export const deleteVaccines = async (req: Request, res: Response) => {
-  const isVaccineDeleted = await deleteVaccine(req.params.id);
+export const deleteVaccines = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await deleteVaccine(req.params.id);
 
-  if (isVaccineDeleted) {
     res.send({ success: true });
+  } catch (error) {
+    next(error);
   }
 };

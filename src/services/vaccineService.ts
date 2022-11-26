@@ -1,8 +1,16 @@
-import uploadImage, { deleteImage } from "../utils/imageUtil";
 import VaccineModel from "../models/vaccineModel";
 
 import { VaccinePayload } from "../types/vaccine";
 
+import { deleteImage } from "../utils/cloudinaryUtil";
+
+import { STATUS_CODE, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
+
+/**
+ * Get all the vaccines.
+ *
+ * @returns {Object}
+ */
 export const getAllVaccines = async () => {
   const allVaccines = await VaccineModel.getAllVaccines();
 
@@ -11,6 +19,12 @@ export const getAllVaccines = async () => {
   };
 };
 
+/**
+ * Create a new vaccine.
+ *
+ * @param vaccinePayload {Object}
+ * @returns {Object}
+ */
 export const createVaccine = async (vaccinePayload: VaccinePayload) => {
   const createdVaccine = await VaccineModel.createVaccine({
     ...vaccinePayload,
@@ -22,6 +36,13 @@ export const createVaccine = async (vaccinePayload: VaccinePayload) => {
   };
 };
 
+/**
+ * Update the vaccine.
+ *
+ * @param vaccinePayload {Object}
+ * @param vaccineId {String}
+ * @returns {Object}
+ */
 export const updateVaccine = async (
   vaccinePayload: VaccinePayload,
   vaccineId: string
@@ -37,17 +58,26 @@ export const updateVaccine = async (
   };
 };
 
+/**
+ * Delete the vaccine.
+ *
+ * @param vaccineId
+ * @returns {Object}
+ */
 export const deleteVaccine = async (vaccineId: string) => {
   const fetchedVaccine = await VaccineModel.getVaccineById(vaccineId);
 
   await VaccineModel.deleteVaccine(vaccineId);
 
   if (fetchedVaccine?.vaccine_image_url) {
-    await deleteImage(fetchedVaccine?.vaccine_image_url, "vaccines");
+    await deleteImage(
+      fetchedVaccine?.vaccine_image_url,
+      IMAGE_UPLOAD_FOLDERS.VACCINE
+    );
   }
 
   return {
     data: "Vaccine deleted successfully",
-    status: 200,
+    status: STATUS_CODE.SUCCESS,
   };
 };

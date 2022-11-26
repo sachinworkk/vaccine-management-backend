@@ -1,12 +1,17 @@
 import { Request, Response, NextFunction } from "express";
+
 import { UserSigningUp, UserLoginCredentials } from "../types/user";
+
+import { STATUS_CODE, MAX_COOKIE_AGE } from "../constants/constants";
 
 import { createUser, signInUser, signOutUser } from "../services/userService";
 
 /**
- * Signs up the user.
- * @param  {Request} req
- * @param  {Response} res
+ * Sign up a new user.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
  */
 export const signUp = async (
   req: Request,
@@ -17,17 +22,19 @@ export const signUp = async (
 
   try {
     const signedUpUser = await createUser(userSignUpData);
-    res.status(200);
-    res.send(signedUpUser);
+
+    res.status(STATUS_CODE.SUCCESS).send(signedUpUser);
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * Signs in the user.
- * @param  {Request} req
- * @param  {Response} res
+ * Sign in an existing user.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
  */
 export const signIn = async (
   req: Request,
@@ -42,31 +49,38 @@ export const signIn = async (
     );
 
     res.cookie("accessToken", accessToken, {
-      maxAge: 300000,
+      maxAge: MAX_COOKIE_AGE.ACCESS_TOKEN,
       httpOnly: true,
     });
 
     res.cookie("refreshToken", refreshToken, {
-      maxAge: 3.154e10,
+      maxAge: MAX_COOKIE_AGE.REFRESH_TOKEN,
       httpOnly: true,
     });
 
-    res.status(200).send({ data, message });
+    res.status(STATUS_CODE.SUCCESS).send({ data, message });
   } catch (error) {
     next(error);
   }
 };
 
 /**
- * Signs in the user.
- * @param  {Request} req
- * @param  {Response} res
+ * Sign out user.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
  */
-export const signOut = async (req: Request, res: Response) => {
-  const { refreshToken } = req.cookies;
-  const isRefreshTokenDeleted = await signOutUser(refreshToken);
+export const signOut = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { refreshToken } = req.cookies;
 
-  if (isRefreshTokenDeleted) {
+    await signOutUser(refreshToken);
+
     res.cookie("accessToken", "", {
       maxAge: 0,
       httpOnly: true,
@@ -77,6 +91,8 @@ export const signOut = async (req: Request, res: Response) => {
       httpOnly: true,
     });
 
-    res.send({ success: true });
+    res.status(STATUS_CODE.SUCCESS).send({ success: true });
+  } catch (error) {
+    next(error);
   }
 };

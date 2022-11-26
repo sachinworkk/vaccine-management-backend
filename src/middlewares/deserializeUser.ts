@@ -1,10 +1,22 @@
-import { signJWT, verifyJWT } from "./../utils/authUtil";
 import { NextFunction, Request, Response } from "express";
-
-import { UserPayloadDecodedFromToken } from "../types/userPayloadDecodedFromToken";
 
 import RefreshTokenModel from "../models/refreshTokenModel";
 
+import { signJWT, verifyJWT } from "./../utils/authUtil";
+
+import { MAX_COOKIE_AGE, JWT_SIGN_AGE } from "./../constants/constants";
+
+import { UserPayloadDecodedFromToken } from "../types/userPayloadDecodedFromToken";
+
+/**
+ * Generates new access token from refresh token and
+ * adds the deserialized user to the request payload.
+ *
+ * @param req user Request with access token in header
+ * @param res Response
+ * @param next NextFunction
+ * @returns next function if access token is valid and adds token data to request.
+ */
 export const deserializeUser = async (
   req: Request,
   res: Response,
@@ -50,11 +62,11 @@ export const deserializeUser = async (
   const newAccessToken = signJWT(
     userPayload,
     process.env.ACCESS_TOKEN_PRIVATE as string,
-    "5s"
+    JWT_SIGN_AGE.ACCESS_TOKEN
   );
 
   res.cookie("accessToken", newAccessToken, {
-    maxAge: 300000,
+    maxAge: MAX_COOKIE_AGE.ACCESS_TOKEN,
     httpOnly: true,
   });
 
