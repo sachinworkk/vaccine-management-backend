@@ -1,3 +1,5 @@
+import { validateSignUp } from "./../schemas/signUpSchema";
+import { AppError } from "./../misc/appError";
 import UserModel from "../models/userModel";
 import RefreshTokenModel from "../models/refreshTokenModel";
 
@@ -14,6 +16,10 @@ import { UserSigningUp, UserLoginCredentials } from "../types/user";
  * @returns {Object}
  */
 export const createUser = async (userData: UserSigningUp) => {
+  const { error, value } = validateSignUp(userData);
+
+  if (error) throw error;
+
   const hashedPassword = await hashPassword(userData.password, NUMBER_OF_SALT);
 
   const insertedData = await UserModel.createUser({
@@ -36,14 +42,15 @@ export const createUser = async (userData: UserSigningUp) => {
 export const signInUser = async (userCredentials: UserLoginCredentials) => {
   const userSigningIn = await UserModel.getUserByEmail(userCredentials.email);
 
-  if (!userSigningIn) throw new Error("User does not exist");
+  if (!userSigningIn) throw new AppError(400, "User not found");
 
   const passwordVerification = await verifyPassword(
     userCredentials.password,
     userSigningIn.password
   );
 
-  if (!passwordVerification) throw new Error("Password does not match");
+  if (!passwordVerification)
+    throw new AppError(400, "Invalid username or password");
 
   const accessToken = signJWT(
     {

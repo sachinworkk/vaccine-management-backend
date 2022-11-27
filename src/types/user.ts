@@ -3,11 +3,11 @@ export interface User {
   id: number;
   name: string;
   gender: string;
-  date_of_birth: string;
+  dateOfBirth: string;
   email: string;
   password: string;
   address: string;
-  profile_image_url?: string;
+  profileImageUrl?: string;
 }
 
 export interface UserLoginCredentials {

@@ -8,6 +8,7 @@ import vaccineRoutes from "./routes/vaccineRoute";
 import * as routes from "./constants/urls";
 
 import { requireUser } from "./middlewares/requireUser";
+import { errorHandler } from "./middlewares/errorHandler";
 import { deserializeUser } from "./middlewares/deserializeUser";
 
 const app = express();
@@ -25,5 +26,7 @@ app.use(deserializeUser);
 
 app.use(routes.ROOT, userRoutes);
 app.use(routes.VACCINE, requireUser, vaccineRoutes);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log("server listening on port"));
