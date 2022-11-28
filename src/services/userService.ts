@@ -1,9 +1,11 @@
-import { validateSignUp } from "./../schemas/signUpSchema";
-import { AppError } from "./../misc/appError";
 import UserModel from "../models/userModel";
 import RefreshTokenModel from "../models/refreshTokenModel";
 
 import { JWT_SIGN_AGE, NUMBER_OF_SALT } from "./../constants/constants";
+
+import { validateSignUp } from "./../schemas/signUpSchema";
+
+import { AppError } from "./../misc/appError";
 
 import { signJWT, hashPassword, verifyPassword } from "./../utils/authUtil";
 
@@ -16,14 +18,16 @@ import { UserSigningUp, UserLoginCredentials } from "../types/user";
  * @returns {Object}
  */
 export const createUser = async (userData: UserSigningUp) => {
-  const { error, value } = validateSignUp(userData);
+  const { error } = validateSignUp(userData);
 
   if (error) throw error;
 
   const hashedPassword = await hashPassword(userData.password, NUMBER_OF_SALT);
 
+  const { confirmPassword, ...userSignUpData } = userData;
+
   const insertedData = await UserModel.createUser({
-    ...userData,
+    ...userSignUpData,
     password: hashedPassword,
   });
 
@@ -42,7 +46,7 @@ export const createUser = async (userData: UserSigningUp) => {
 export const signInUser = async (userCredentials: UserLoginCredentials) => {
   const userSigningIn = await UserModel.getUserByEmail(userCredentials.email);
 
-  if (!userSigningIn) throw new AppError(400, "User not found");
+  if (!userSigningIn) throw new AppError(400, "Username not found");
 
   const passwordVerification = await verifyPassword(
     userCredentials.password,
@@ -74,7 +78,7 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
 
   await RefreshTokenModel.createRefreshToken({
     token: refreshToken,
-    user_id: userSigningIn.id,
+    userId: userSigningIn.id,
   });
 
   return {

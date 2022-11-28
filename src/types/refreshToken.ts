@@ -2,7 +2,7 @@
 export interface RefreshToken {
   id: number;
   token: string;
-  user_id: number;
+  userId: number;
 }
 
 // User data when creating the user (no id column)

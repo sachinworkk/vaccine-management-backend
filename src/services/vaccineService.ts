@@ -1,3 +1,5 @@
+import { AppError } from "./../misc/appError";
+import { validateVaccine } from "./../schemas/vaccineSchema";
 import VaccineModel from "../models/vaccineModel";
 
 import { VaccinePayload } from "../types/vaccine";
@@ -26,6 +28,10 @@ export const getAllVaccines = async () => {
  * @returns {Object}
  */
 export const createVaccine = async (vaccinePayload: VaccinePayload) => {
+  const { error } = validateVaccine(vaccinePayload);
+
+  if (error) throw error;
+
   const createdVaccine = await VaccineModel.createVaccine({
     ...vaccinePayload,
   });
@@ -47,6 +53,10 @@ export const updateVaccine = async (
   vaccinePayload: VaccinePayload,
   vaccineId: string
 ) => {
+  const { error } = validateVaccine(vaccinePayload);
+
+  if (error) throw error;
+
   const updatedVaccine = await VaccineModel.updateVaccine(
     vaccinePayload,
     vaccineId
@@ -67,11 +77,13 @@ export const updateVaccine = async (
 export const deleteVaccine = async (vaccineId: string) => {
   const fetchedVaccine = await VaccineModel.getVaccineById(vaccineId);
 
+  if (!fetchedVaccine) throw new AppError(400, "Vaccine not found");
+
   await VaccineModel.deleteVaccine(vaccineId);
 
-  if (fetchedVaccine?.vaccine_image_url) {
+  if (fetchedVaccine?.vaccineImageUrl) {
     await deleteImage(
-      fetchedVaccine?.vaccine_image_url,
+      fetchedVaccine?.vaccineImageUrl,
       IMAGE_UPLOAD_FOLDERS.VACCINE
     );
   }

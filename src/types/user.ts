@@ -5,8 +5,9 @@ export interface User {
   gender: string;
   dateOfBirth: string;
   email: string;
-  password: string;
   address: string;
+  password: string;
+  confirmPassword?: string;
   profileImageUrl?: string;
 }
 

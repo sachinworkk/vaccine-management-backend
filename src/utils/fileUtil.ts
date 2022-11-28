@@ -8,3 +8,21 @@ export const getImageCloudinaryId = (imageUrl: string) => {
   const assetId = (<string>imageName).split(".")[0];
   return assetId;
 };
+
+/**
+ * Checks if is valid image.
+ *
+ * @param {string} mimeType
+ * @returns Boolean
+ */
+export const isValidImage = (mimeType: string) => {
+  if (
+    mimeType === "image/jpeg" ||
+    mimeType === "image/png" ||
+    mimeType === "image/gif"
+  ) {
+    return true;
+  }
+
+  return false;
+};

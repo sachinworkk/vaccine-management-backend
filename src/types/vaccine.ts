@@ -2,11 +2,12 @@
 export interface Vaccine {
   id: number;
   name: string;
-  description: string;
-  number_of_doses: number;
-  is_mandatory: boolean;
-  vaccine_image_url?: string;
   stage: string;
+  createdBy?: number;
+  description: string;
+  numberOfDoses: number;
+  isMandatory: boolean;
+  vaccineImageUrl?: string;
 }
 
 // User data when creating the user (no id column)
