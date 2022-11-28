@@ -4,7 +4,7 @@ import RefreshTokenModel from "../models/refreshTokenModel";
 
 import { signJWT, verifyJWT } from "./../utils/authUtil";
 
-import { MAX_COOKIE_AGE, JWT_SIGN_AGE } from "./../constants/constants";
+import { JWT_SIGN_AGE, MAX_COOKIE_AGE } from "./../constants/constants";
 
 import { UserPayloadDecodedFromToken } from "../types/userPayloadDecodedFromToken";
 

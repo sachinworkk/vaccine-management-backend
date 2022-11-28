@@ -11,7 +11,7 @@ export const IMAGE_RES = {
 export const NUMBER_OF_SALT = 10;
 
 export const JWT_SIGN_AGE = {
-  ACCESS_TOKEN: 5000, // 5 seconds
+  ACCESS_TOKEN: "30s", // 30 seconds
   REFRESH_TOKEN: 3.156e10, // 1 year
 };
 
