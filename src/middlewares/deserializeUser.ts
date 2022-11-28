@@ -35,7 +35,6 @@ export const deserializeUser = async (
 
   // For a valid access token
   if (payload) {
-    // @ts-ignore
     req.user = payload;
 
     return next();
@@ -70,11 +69,10 @@ export const deserializeUser = async (
     httpOnly: true,
   });
 
-  // @ts-ignore
   req.user = verifyJWT(
     newAccessToken,
     process.env.ACCESS_TOKEN_PUBLIC as string
-  ).payload;
+  )?.payload;
 
   return next();
 };

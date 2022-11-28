@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
 
+import { JwtPayload } from "jsonwebtoken";
+
 import userRoutes from "./routes/userRoute";
 import vaccineRoutes from "./routes/vaccineRoute";
 
@@ -10,6 +12,14 @@ import * as routes from "./constants/urls";
 import { requireUser } from "./middlewares/requireUser";
 import { errorHandler } from "./middlewares/errorHandler";
 import { deserializeUser } from "./middlewares/deserializeUser";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: string | JwtPayload | null;
+    }
+  }
+}
 
 const app = express();
 
