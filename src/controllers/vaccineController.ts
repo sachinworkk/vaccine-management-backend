@@ -1,5 +1,3 @@
-import { AppError } from "./../misc/appError";
-import { isValidImage } from "./../utils/fileUtil";
 import { Request, Response, NextFunction } from "express";
 
 import {
@@ -14,9 +12,7 @@ import { tryCatch } from "./../utils/tryCatch";
 import { VaccinePayload } from "../types/vaccine";
 import { RequestWithUser } from "../types/requestWIthUser";
 
-import { STATUS_CODE, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
-
-import { uploadImageToCloudinary } from "../utils/cloudinaryUtil";
+import { STATUS_CODE } from "../constants/constants";
 
 /**
  * Get all vaccines.
@@ -44,23 +40,10 @@ export const getVaccines = tryCatch(
  */
 export const createVaccines = tryCatch(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    let imageURL = "";
-
-    if (req.file) {
-      if (!isValidImage(req.file?.mimetype)) {
-        throw new AppError(400, "Invalid file type");
-      }
-
-      imageURL = (await uploadImageToCloudinary(
-        req,
-        IMAGE_UPLOAD_FOLDERS.VACCINE
-      )) as string;
-    }
-
     const vaccinePayload = {
       ...req.body,
       createdBy: req.user.userId,
-      vaccineImageUrl: imageURL,
+      file: req.file,
     } as VaccinePayload;
 
     const createdVaccine = await createVaccine(vaccinePayload);
@@ -79,23 +62,16 @@ export const createVaccines = tryCatch(
  */
 export const updateVaccines = tryCatch(
   async (req: RequestWithUser, res: Response, next: NextFunction) => {
-    let imageURL = req.body?.vaccineImageUrl || "";
-
-    if (req.file) {
-      imageURL = await uploadImageToCloudinary(req, "vaccines");
-    }
-
     const updatedVaccinePayload = {
       ...req.body,
-      updated_by: req.user.userId,
-      vaccineImageUrl: imageURL,
+      updatedBy: req.user.userId,
+      file: req.file,
     } as VaccinePayload;
 
     const updatedVaccine = await updateVaccine(
       updatedVaccinePayload,
       req.params.id
     );
-
     res.status(STATUS_CODE.SUCCESS).send(updatedVaccine);
   }
 );

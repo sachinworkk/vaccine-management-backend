@@ -24,13 +24,13 @@ const vaccineSchema = Joi.object({
     "any.required": `Description is a required field`,
     "string.base": `Please provide a valid description`,
   }),
-  createdBy: Joi.number().required().messages({
-    "any.required": `Created By is a required value`,
+  createdBy: Joi.number().messages({
     "number.base": `Please provide a valid user id`,
   }),
-  vaccineImageUrl: Joi.string().allow("").messages({
-    "string.base": `Please provide a valid image url`,
+  updatedBy: Joi.number().messages({
+    "number.base": `Please provide a valid user id`,
   }),
+  file: Joi.any(),
 });
 
 export const validateVaccine = validator(vaccineSchema);

@@ -1,10 +1,12 @@
-import { AppError } from "./../misc/appError";
-import { validateVaccine } from "./../schemas/vaccineSchema";
 import VaccineModel from "../models/vaccineModel";
 
 import { VaccinePayload } from "../types/vaccine";
 
-import { deleteImage } from "../utils/cloudinaryUtil";
+import { AppError } from "./../misc/appError";
+
+import { validateVaccine } from "./../schemas/vaccineSchema";
+
+import { deleteImage, uploadImageToCloudinary } from "../utils/cloudinaryUtil";
 
 import { STATUS_CODE, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
 
@@ -32,8 +34,20 @@ export const createVaccine = async (vaccinePayload: VaccinePayload) => {
 
   if (error) throw error;
 
+  let imageURL = "";
+
+  if (vaccinePayload.file) {
+    imageURL = (await uploadImageToCloudinary(
+      vaccinePayload?.file,
+      IMAGE_UPLOAD_FOLDERS.VACCINE
+    )) as string;
+  }
+
+  const { file, ...vaccineToSave } = vaccinePayload;
+
   const createdVaccine = await VaccineModel.createVaccine({
-    ...vaccinePayload,
+    ...vaccineToSave,
+    vaccineImageUrl: imageURL,
   });
 
   return {
@@ -57,8 +71,22 @@ export const updateVaccine = async (
 
   if (error) throw error;
 
+  let imageURL = "";
+
+  if (vaccinePayload.file) {
+    imageURL = (await uploadImageToCloudinary(
+      vaccinePayload?.file,
+      IMAGE_UPLOAD_FOLDERS.VACCINE
+    )) as string;
+  }
+
+  const { file, ...vaccineToUpdate } = vaccinePayload;
+
   const updatedVaccine = await VaccineModel.updateVaccine(
-    vaccinePayload,
+    {
+      ...vaccineToUpdate,
+      vaccineImageUrl: imageURL,
+    },
     vaccineId
   );
 

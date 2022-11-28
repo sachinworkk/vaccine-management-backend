@@ -19,13 +19,16 @@ export const getImageCloudinaryId = (imageUrl: string) => {
 };
 
 /**
- * It uploads an image to Cloudinary, deletes the image from the local file system, and returns the URL
- * of the uploaded image
- * @param {string} fileString
+ * It uploads an image to Cloudinary.
+ * @param {file} Image file to upload
+ * @param {folder} String
  * @returns {Promise}
  */
-export const uploadImageToCloudinary = async (req: Request, folder: string) => {
-  const resizedImageBuffer = await sharp(req?.file?.buffer)
+export const uploadImageToCloudinary = async (
+  file: Express.Multer.File,
+  folder: string
+) => {
+  const resizedImageBuffer = await sharp(file?.buffer)
     .resize({
       width: IMAGE_RES.WIDTH,
       height: IMAGE_RES.HEIGHT,

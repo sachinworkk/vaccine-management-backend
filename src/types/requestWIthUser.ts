@@ -8,4 +8,5 @@ export interface RequestWithUser extends Request {
     name: string;
     email: string;
   };
+  file?: Express.Multer.File;
 }
