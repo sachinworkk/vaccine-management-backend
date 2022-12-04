@@ -82,7 +82,7 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
   });
 
   return {
-    data: {
+    user: {
       ...userSigningIn,
     },
     accessToken,

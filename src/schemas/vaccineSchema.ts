@@ -4,7 +4,7 @@ import { validator } from "./../misc/validator";
 
 const vaccineSchema = Joi.object({
   name: Joi.string().required().messages({
-    "any.empty": `Name cannot be empty`,
+    "string.empty": `Name cannot be empty`,
     "any.required": `Name is a required field`,
     "string.base": `Please provide a valid name`,
   }),
@@ -17,10 +17,12 @@ const vaccineSchema = Joi.object({
     "boolean.base": `Please provide a valid is mandatory field`,
   }),
   stage: Joi.string().required().messages({
+    "string.empty": `Stage cannot be empty`,
     "any.required": `Stage is a required field`,
     "string.base": `Please provide a valid stage`,
   }),
   description: Joi.string().messages({
+    "string.empty": `Description cannot be empty`,
     "any.required": `Description is a required field`,
     "string.base": `Please provide a valid description`,
   }),

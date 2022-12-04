@@ -31,7 +31,7 @@ export const signUp = tryCatch(async (req: Request, res: Response) => {
 export const signIn = tryCatch(async (req: Request, res: Response) => {
   const userLoginCredentials = { ...req.body } as UserLoginCredentials;
 
-  const { data, message, accessToken, refreshToken } = await signInUser(
+  const { user, message, accessToken, refreshToken } = await signInUser(
     userLoginCredentials
   );
 
@@ -45,7 +45,7 @@ export const signIn = tryCatch(async (req: Request, res: Response) => {
     httpOnly: true,
   });
 
-  res.status(STATUS_CODE.SUCCESS).send({ data, message });
+  res.status(STATUS_CODE.SUCCESS).send({ user, message });
 });
 
 /**
