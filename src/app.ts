@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 import userRoutes from "./routes/userRoute";
 import vaccineRoutes from "./routes/vaccineRoute";
+import tokenRoutes from "./routes/tokenRoute";
 
 import * as routes from "./constants/urls";
 
@@ -39,10 +40,12 @@ app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: false }));
 
+app.use(routes.ROOT, userRoutes);
+app.use(routes.TOKEN, tokenRoutes);
+
 app.use(deserializeUser);
 
-app.use(routes.ROOT, userRoutes);
-app.use(routes.VACCINE, requireUser, vaccineRoutes);
+app.use(routes.VACCINE, vaccineRoutes);
 
 app.use(errorHandler);
 

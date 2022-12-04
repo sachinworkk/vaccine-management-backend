@@ -35,17 +35,9 @@ export const signIn = tryCatch(async (req: Request, res: Response) => {
     userLoginCredentials
   );
 
-  res.cookie("accessToken", accessToken, {
-    maxAge: MAX_COOKIE_AGE.ACCESS_TOKEN,
-    httpOnly: true,
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    maxAge: MAX_COOKIE_AGE.REFRESH_TOKEN,
-    httpOnly: true,
-  });
-
-  res.status(STATUS_CODE.SUCCESS).send({ user, message });
+  res
+    .status(STATUS_CODE.SUCCESS)
+    .send({ user, accessToken, refreshToken, message });
 });
 
 /**
