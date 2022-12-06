@@ -11,7 +11,6 @@ class UserModel {
       "date_of_birth",
       "email",
       "address",
-      "profile_image_url",
     ]);
 
     return newUser;

@@ -7,7 +7,10 @@
     "build": "npx tsc",
     "start": "node dist/app.js",
     "dev": "concurrently --kill-others \"npx tsc -w\" \"nodemon dist/app.js\"",
-    "migrate:make": "knex --migrations-directory src/db/migrations migrate:make"
+    "migrate:make": "knex --migrations-directory src/db/migrations migrate:make",
+    "migrate": "knex migrate:latest --knexfile src/db/knexfile.ts",
+    "migrate:prod": "knex migrate:latest --knexfile dist/db/knexfile.js",
+    "migrate:rollback": "knex migrate:rollback --knexfile src/db/knexfile.ts"
   },
   "author": "Sachin Khadka",
   "license": "MIT",

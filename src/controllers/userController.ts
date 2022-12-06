@@ -1,10 +1,11 @@
+import { JwtPayload } from "jsonwebtoken";
 import { Request, Response } from "express";
 
 import { UserSigningUp, UserLoginCredentials } from "../types/user";
 
 import { tryCatch } from "./../utils/tryCatch";
 
-import { STATUS_CODE, MAX_COOKIE_AGE } from "../constants/constants";
+import { STATUS_CODE } from "../constants/constants";
 
 import { createUser, signInUser, signOutUser } from "../services/userService";
 
@@ -47,19 +48,7 @@ export const signIn = tryCatch(async (req: Request, res: Response) => {
  * @param {Object} res
  */
 export const signOut = tryCatch(async (req: Request, res: Response) => {
-  const { refreshToken } = req.cookies;
-
-  await signOutUser(refreshToken);
-
-  res.cookie("accessToken", "", {
-    maxAge: 0,
-    httpOnly: true,
-  });
-
-  res.cookie("refreshToken", "", {
-    maxAge: 0,
-    httpOnly: true,
-  });
+  await signOutUser(req.user as JwtPayload);
 
   res.status(STATUS_CODE.SUCCESS).send({ success: true });
 });

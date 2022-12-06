@@ -33,6 +33,7 @@ const vaccineSchema = Joi.object({
     "number.base": `Please provide a valid user id`,
   }),
   file: Joi.any(),
+  vaccineImageUrl: Joi.string().allow(null, ""),
 });
 
 export const validateVaccine = validator(vaccineSchema);

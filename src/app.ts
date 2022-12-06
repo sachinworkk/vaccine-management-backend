@@ -6,12 +6,14 @@ import cookieParser from "cookie-parser";
 import { JwtPayload } from "jsonwebtoken";
 
 import userRoutes from "./routes/userRoute";
-import vaccineRoutes from "./routes/vaccineRoute";
+
 import tokenRoutes from "./routes/tokenRoute";
+import vaccineRoutes from "./routes/vaccineRoute";
+
+import { signOut } from "./controllers/userController";
 
 import * as routes from "./constants/urls";
 
-import { requireUser } from "./middlewares/requireUser";
 import { errorHandler } from "./middlewares/errorHandler";
 import { deserializeUser } from "./middlewares/deserializeUser";
 
@@ -44,6 +46,8 @@ app.use(routes.ROOT, userRoutes);
 app.use(routes.TOKEN, tokenRoutes);
 
 app.use(deserializeUser);
+
+app.delete(routes.SIGN_OUT, signOut);
 
 app.use(routes.VACCINE, vaccineRoutes);
 

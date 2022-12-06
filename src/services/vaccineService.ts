@@ -24,6 +24,19 @@ export const getAllVaccines = async () => {
 };
 
 /**
+ * Get the vaccine by id.
+ *
+ * @returns {Object}
+ */
+export const getVaccine = async (id: string) => {
+  const vaccine = await VaccineModel.getVaccineById(id);
+
+  return {
+    data: vaccine,
+  };
+};
+
+/**
  * Create a new vaccine.
  *
  * @param vaccinePayload {Object}
@@ -71,9 +84,9 @@ export const updateVaccine = async (
 
   if (error) throw error;
 
-  let imageURL = "";
+  let imageURL = vaccinePayload?.vaccineImageUrl;
 
-  if (vaccinePayload.file) {
+  if (vaccinePayload?.file) {
     imageURL = (await uploadImageToCloudinary(
       vaccinePayload?.file,
       IMAGE_UPLOAD_FOLDERS.VACCINE

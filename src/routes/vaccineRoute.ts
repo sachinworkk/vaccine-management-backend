@@ -13,6 +13,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.get(routes.ROOT, vaccineController.getVaccines);
+router.get(routes.VACCINE_ID, vaccineController.getVaccineById);
 
 router.post(
   routes.ROOT,

@@ -1,3 +1,5 @@
+import { JwtPayload } from "jsonwebtoken";
+
 import UserModel from "../models/userModel";
 import RefreshTokenModel from "../models/refreshTokenModel";
 
@@ -94,9 +96,9 @@ export const signInUser = async (userCredentials: UserLoginCredentials) => {
 /**
  * Sign out the user.
  *
- * @param refreshToken
+ * @param user
  * @returns {Promise}
  */
-export const signOutUser = async (refreshToken: string) => {
-  return await RefreshTokenModel.deleteRefreshToken(refreshToken);
+export const signOutUser = async (user: JwtPayload) => {
+  return await RefreshTokenModel.deleteRefreshToken(user.userId);
 };

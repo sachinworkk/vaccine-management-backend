@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import {
+  getVaccine,
   createVaccine,
   updateVaccine,
   deleteVaccine,
@@ -27,6 +28,23 @@ export const getVaccines = tryCatch(
 
     res.send({
       data: allVaccines,
+    });
+  }
+);
+
+/**
+ * Get all vaccines.
+ *
+ * @param  {Request} req
+ * @param  {Response} res
+ * @param  {NextFunction} next
+ */
+export const getVaccineById = tryCatch(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const data = await getVaccine(req.params.id);
+
+    res.send({
+      ...data,
     });
   }
 );

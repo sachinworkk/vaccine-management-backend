@@ -8,7 +8,6 @@ export interface User {
   address: string;
   password: string;
   confirmPassword?: string;
-  profileImageUrl?: string;
 }
 
 export interface UserLoginCredentials {

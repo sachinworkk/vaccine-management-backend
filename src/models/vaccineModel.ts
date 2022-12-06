@@ -37,16 +37,17 @@ class VaccineModel {
   };
 
   public static getAllVaccines = async () => {
-    const allVaccines = await db("vaccines").select([
-      "id",
-      "name",
-      "description",
-      "number_of_doses",
-      "is_mandatory",
-      "stage",
-      "vaccine_image_url",
-    ]);
-
+    const allVaccines = await db("vaccines")
+      .select([
+        "id",
+        "name",
+        "description",
+        "number_of_doses",
+        "is_mandatory",
+        "stage",
+        "vaccine_image_url",
+      ])
+      .orderBy("name", "asc");
     return allVaccines;
   };
 
