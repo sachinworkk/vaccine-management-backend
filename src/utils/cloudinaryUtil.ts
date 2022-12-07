@@ -1,8 +1,6 @@
 import sharp from "sharp";
 import streamifier from "streamifier";
 
-import { Request } from "express";
-
 import cloudinary from "../configs/cloudinary";
 
 import { IMAGE_RES, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";

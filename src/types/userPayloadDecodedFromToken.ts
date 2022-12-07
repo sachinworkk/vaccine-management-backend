@@ -1,4 +1,3 @@
-// User interface
 export interface TokenPayload {
   iat: number;
   exp: number;
@@ -7,5 +6,4 @@ export interface TokenPayload {
   email: string;
 }
 
-// User data when creating the user (no id column)
 export type UserPayloadDecodedFromToken = TokenPayload;

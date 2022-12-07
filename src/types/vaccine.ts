@@ -1,4 +1,3 @@
-// User interface
 export interface Vaccine {
   id: number;
   name: string;
@@ -12,5 +11,4 @@ export interface Vaccine {
   vaccineImageUrl?: string;
 }
 
-// User data when creating the user (no id column)
 export type VaccinePayload = Omit<Vaccine, "id">;

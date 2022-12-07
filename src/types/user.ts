@@ -1,4 +1,3 @@
-// User interface
 export interface User {
   id: number;
   name: string;
@@ -15,8 +14,6 @@ export interface UserLoginCredentials {
   password: string;
 }
 
-// User data when creating the user (no id column)
 export type UserSigningUp = Omit<User, "id">;
 
-// User data when getting the user data from backend (no password column)
 export type UserSigningIn = Omit<User, "password">;

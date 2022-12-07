@@ -34,7 +34,7 @@ export const createUser = async (userData: UserSigningUp) => {
   });
 
   return {
-    data: insertedData,
+    user: insertedData,
     message: "User created successfully",
   };
 };
