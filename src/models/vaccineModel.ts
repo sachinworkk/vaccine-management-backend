@@ -47,6 +47,7 @@ class VaccineModel {
         "stage",
         "vaccine_image_url",
       ])
+      .orderBy("isMandatory", "desc")
       .orderBy("name", "asc");
     return allVaccines;
   };
