@@ -3,7 +3,7 @@ import Joi from "joi";
 import { validator } from "./../misc/validator";
 
 const vaccineSchema = Joi.object({
-  name: Joi.string().required().messages({
+  name: Joi.string().trim().required().messages({
     "string.empty": `Name cannot be empty`,
     "any.required": `Name is a required field`,
     "string.base": `Please provide a valid name`,
@@ -21,7 +21,7 @@ const vaccineSchema = Joi.object({
     "any.required": `Stage is a required field`,
     "string.base": `Please provide a valid stage`,
   }),
-  description: Joi.string().messages({
+  description: Joi.string().trim().messages({
     "string.empty": `Description cannot be empty`,
     "any.required": `Description is a required field`,
     "string.base": `Please provide a valid description`,
