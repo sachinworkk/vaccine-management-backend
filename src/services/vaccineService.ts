@@ -8,7 +8,7 @@ import { validateVaccine } from "./../schemas/vaccineSchema";
 
 import { deleteImage, uploadImageToCloudinary } from "../utils/cloudinaryUtil";
 
-import { STATUS_CODE, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
+import { IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
 
 /**
  * Get all the vaccines.
@@ -19,7 +19,7 @@ export const getAllVaccines = async () => {
   const allVaccines = await VaccineModel.getAllVaccines();
 
   return {
-    data: allVaccines,
+    vaccines: allVaccines,
   };
 };
 
@@ -32,7 +32,9 @@ export const getVaccine = async (id: string) => {
   const vaccine = await VaccineModel.getVaccineById(id);
 
   return {
-    data: vaccine,
+    vaccine: {
+      ...vaccine,
+    },
   };
 };
 
@@ -64,7 +66,7 @@ export const createVaccine = async (vaccinePayload: VaccinePayload) => {
   });
 
   return {
-    data: createdVaccine,
+    vaccine: createdVaccine,
     message: "Vaccine created successfully",
   };
 };
@@ -104,7 +106,7 @@ export const updateVaccine = async (
   );
 
   return {
-    data: updatedVaccine,
+    vaccine: updatedVaccine,
     message: "Vaccine updated successfully",
   };
 };
@@ -130,7 +132,6 @@ export const deleteVaccine = async (vaccineId: string) => {
   }
 
   return {
-    data: "Vaccine deleted successfully",
-    status: STATUS_CODE.SUCCESS,
+    message: "Vaccine deleted successfully",
   };
 };

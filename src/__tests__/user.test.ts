@@ -126,7 +126,7 @@ describe("user signup test", () => {
     expect(res.body).toHaveProperty("type");
   });
 
-  test("user already exists", async () => {
+  test("email already exists", async () => {
     const mockCreateUser = jest.fn((): any => user);
 
     const mockIfUserAlreadyExists = jest.fn((): any =>
@@ -252,7 +252,7 @@ describe("user signOut test", () => {
       .set("Authorization", `Bearer ${token}`)
       .send();
 
-    expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("success");
+    expect(res.status).toBe(200);
   });
 });

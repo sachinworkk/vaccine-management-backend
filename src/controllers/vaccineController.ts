@@ -26,9 +26,7 @@ export const getVaccines = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const allVaccines = await getAllVaccines();
 
-    res.send({
-      data: allVaccines,
-    });
+    res.status(STATUS_CODE.SUCCESS).send(allVaccines);
   }
 );
 
@@ -41,11 +39,9 @@ export const getVaccines = tryCatch(
  */
 export const getVaccineById = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const data = await getVaccine(req.params.id);
+    const vaccine = await getVaccine(req.params.id);
 
-    res.send({
-      ...data,
-    });
+    res.status(STATUS_CODE.SUCCESS).send(vaccine);
   }
 );
 
@@ -65,9 +61,8 @@ export const createVaccines = tryCatch(
     } as VaccinePayload;
 
     const createdVaccine = await createVaccine(vaccinePayload);
-    res.status(STATUS_CODE.SUCCESS);
 
-    res.send(createdVaccine);
+    res.status(STATUS_CODE.SUCCESS).send(createdVaccine);
   }
 );
 
@@ -90,6 +85,7 @@ export const updateVaccines = tryCatch(
       updatedVaccinePayload,
       req.params.id
     );
+
     res.status(STATUS_CODE.SUCCESS).send(updatedVaccine);
   }
 );
@@ -103,8 +99,8 @@ export const updateVaccines = tryCatch(
  */
 export const deleteVaccines = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    await deleteVaccine(req.params.id);
+    const isVaccineDeleted = await deleteVaccine(req.params.id);
 
-    res.send({ success: true });
+    res.status(STATUS_CODE.SUCCESS).send(isVaccineDeleted);
   }
 );
