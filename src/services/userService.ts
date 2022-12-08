@@ -24,6 +24,10 @@ export const createUser = async (userData: UserSigningUp) => {
 
   if (error) throw error;
 
+  const doesUserExist = await UserModel.getUserByEmail(userData.email);
+
+  if (doesUserExist) throw new AppError(400, "Username already exist");
+
   const hashedPassword = await hashPassword(userData.password, NUMBER_OF_SALT);
 
   const { confirmPassword, ...userSignUpData } = userData;
