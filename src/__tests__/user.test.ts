@@ -7,22 +7,11 @@ import RefreshTokenModel from "../models/refreshTokenModel";
 
 import * as authUtl from "../utils/authUtil";
 
+import { getMockToken } from "./mockUtils";
+
 import { MOCK_USER, MOCK_USERS } from "./mockData";
 
-let token: string;
-
-beforeAll((done) => {
-  request(app)
-    .post("/signIn")
-    .send({
-      email: "admin@gmail.com",
-      password: "password",
-    })
-    .end((err, response) => {
-      token = response.body.accessToken; // save the token!
-      done();
-    });
-});
+let token = getMockToken();
 
 const checkIfUserExists = (email: String) => {
   return MOCK_USERS.some((user) => email === user.email);

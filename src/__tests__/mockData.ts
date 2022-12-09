@@ -77,3 +77,5 @@ export const MOCK_VACCINE = {
   vaccineImageUrl:
     "https://res.cloudinary.com/dr8t3y3cp/image/upload/v1670384010/vaccine-management/vaccines/nf4ozigrmryzn7ji4u6c.png",
 };
+
+export const MOCK_ACCESS_TOKEN_SIGN_AGE = 3.156e10;

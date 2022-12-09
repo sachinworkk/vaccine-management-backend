@@ -6,24 +6,13 @@ import app from "../app";
 
 import VaccineModel from "../models/vaccineModel";
 
-import { MOCK_VACCINE, MOCK_VACCINES } from "./mockData";
+import { getMockToken } from "./mockUtils";
 
 import * as cloudinaryUtil from "../utils/cloudinaryUtil";
 
-let token: string;
+import { MOCK_VACCINE, MOCK_VACCINES } from "./mockData";
 
-beforeAll((done) => {
-  request(app)
-    .post("/signIn")
-    .send({
-      email: "admin@gmail.com",
-      password: "password",
-    })
-    .end((err, response) => {
-      token = response.body.accessToken; // save the token!
-      done();
-    });
-});
+let token = getMockToken();
 
 const getVaccine = (id: number) =>
   MOCK_VACCINES.find((vaccine) => vaccine.id === id);
