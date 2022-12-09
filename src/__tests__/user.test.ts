@@ -1,3 +1,5 @@
+import request from "supertest";
+
 import app from "../app";
 
 import UserModel from "../models/userModel";
@@ -5,46 +7,9 @@ import RefreshTokenModel from "../models/refreshTokenModel";
 
 import * as authUtl from "../utils/authUtil";
 
-import request from "supertest";
+import { MOCK_USER, MOCK_USERS } from "./mockData";
 
 let token: string;
-
-const user = {
-  name: "Sachin Khadkas",
-  gender: "male",
-  dateOfBirth: "1997/02/10",
-  email: "admin-test@gmail.com",
-  password: "sachin@test",
-  confirmPassword: "sachin@test",
-  address: "kapan",
-};
-
-const users = [
-  {
-    name: "Sachin Khadkas",
-    gender: "male",
-    dateOfBirth: "1997/02/10",
-    email: "admin-test@gmail.com",
-    password: "sachin@test",
-    address: "kapan",
-  },
-  {
-    name: "Biswas Rai",
-    gender: "male",
-    dateOfBirth: "1997/02/10",
-    email: "biswas-rai@gmail.com",
-    password: "biswas@test",
-    address: "kapan",
-  },
-  {
-    name: "Abdul Khan",
-    gender: "male",
-    dateOfBirth: "1997/02/10",
-    email: "abdul-khan@gmail.com",
-    password: "abdul@test",
-    address: "USA",
-  },
-];
 
 beforeAll((done) => {
   request(app)
@@ -60,11 +25,11 @@ beforeAll((done) => {
 });
 
 const checkIfUserExists = (email: String) => {
-  return users.some((user) => email === user.email);
+  return MOCK_USERS.some((user) => email === user.email);
 };
 
 const verifyPassword = (userToCheck: any) => {
-  const userWithUsername: any = users.find(
+  const userWithUsername: any = MOCK_USERS.find(
     (user) => userToCheck.email === user.email
   );
 
@@ -83,7 +48,7 @@ describe("user signup test", () => {
       address: "USA",
     };
 
-    const mockCreateUser = jest.fn((): any => user);
+    const mockCreateUser = jest.fn((): any => MOCK_USER);
 
     const mockIfUserAlreadyExists = jest.fn((): any =>
       checkIfUserExists(userSigninUp.email)
@@ -127,10 +92,10 @@ describe("user signup test", () => {
   });
 
   test("email already exists", async () => {
-    const mockCreateUser = jest.fn((): any => user);
+    const mockCreateUser = jest.fn((): any => MOCK_USER);
 
     const mockIfUserAlreadyExists = jest.fn((): any =>
-      checkIfUserExists(user.email)
+      checkIfUserExists(MOCK_USER.email)
     );
 
     jest
@@ -141,7 +106,7 @@ describe("user signup test", () => {
       .spyOn(UserModel, "getUserByEmail")
       .mockImplementation(() => mockIfUserAlreadyExists());
 
-    const res = await request(app).post("/signup").send(user);
+    const res = await request(app).post("/signup").send(MOCK_USER);
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty("details");
@@ -188,7 +153,7 @@ describe("user signIn test", () => {
     expect(res.body).toHaveProperty("message");
   });
 
-  test("user signin invalid username", async () => {
+  test("user signin invalid email", async () => {
     const loginCredentials = {
       email: "admins@gmail.com",
       password: "password",
@@ -200,7 +165,7 @@ describe("user signIn test", () => {
     const mockCreateRefreshToken = jest.fn((): any => mockRefreshToken);
 
     const mockIfUserAlreadyExists = jest.fn((): any => {
-      checkIfUserExists(user.email);
+      checkIfUserExists(loginCredentials.email);
     });
 
     jest
