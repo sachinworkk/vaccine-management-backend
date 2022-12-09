@@ -1,4 +1,6 @@
+import sharp from "sharp";
 import request from "supertest";
+import streamifier from "streamifier";
 
 import path from "path";
 
@@ -8,14 +10,38 @@ import VaccineModel from "../models/vaccineModel";
 
 import { getMockToken } from "./mockUtils";
 
+import cloudinary from "../configs/cloudinary";
+
 import * as cloudinaryUtil from "../utils/cloudinaryUtil";
 
 import { MOCK_VACCINE, MOCK_VACCINES } from "./mockData";
+import { IMAGE_RES, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
 
 let token = getMockToken();
 
 const getVaccine = (id: number) =>
   MOCK_VACCINES.find((vaccine) => vaccine.id === id);
+
+const mockImageUpload = jest.fn(async (file, folder) => {
+  const resizedImageBuffer = await sharp(file?.buffer)
+    .resize({
+      width: IMAGE_RES.WIDTH,
+      height: IMAGE_RES.HEIGHT,
+    })
+    .toBuffer();
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: `${IMAGE_UPLOAD_FOLDERS.ROOT}/test` },
+      (error, result) => {
+        if (error) reject(error);
+        resolve(result?.secure_url || "");
+      }
+    );
+
+    streamifier.createReadStream(resizedImageBuffer).pipe(stream);
+  });
+});
 
 describe("get vaccine test", () => {
   test("get all vaccine", async () => {
@@ -76,6 +102,10 @@ describe("create vaccine test", () => {
       .spyOn(VaccineModel, "createVaccine")
       .mockImplementation(() => mockCreateVaccine());
 
+    jest
+      .spyOn(cloudinaryUtil, "uploadImageToCloudinary")
+      .mockImplementation((file, folder) => mockImageUpload(file, folder));
+
     const testImage = path.resolve(__dirname, "./image/test.jpg");
 
     const res = await request(app)
@@ -117,6 +147,10 @@ describe("update vaccine test", () => {
     jest
       .spyOn(VaccineModel, "updateVaccine")
       .mockImplementation(() => mockUpdateVaccine());
+
+    jest
+      .spyOn(cloudinaryUtil, "uploadImageToCloudinary")
+      .mockImplementation((file, folder) => mockImageUpload(file, folder));
 
     const testImage = path.resolve(__dirname, "./image/test.jpg");
 
