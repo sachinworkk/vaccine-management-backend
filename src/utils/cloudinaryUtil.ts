@@ -18,15 +18,12 @@ export const getImageCloudinaryId = (imageUrl: string) => {
 
 /**
  * It uploads an image to Cloudinary.
- * @param {file} Image file to upload
+ * @param {file} Image file buffer to upload
  * @param {folder} String
  * @returns {Promise}
  */
-export const uploadImageToCloudinary = async (
-  file: Express.Multer.File,
-  folder: string
-) => {
-  const resizedImageBuffer = await sharp(file?.buffer)
+export const uploadImageToCloudinary = async (file: Buffer, folder: string) => {
+  const resizedImageBuffer = await sharp(file)
     .resize({
       width: IMAGE_RES.WIDTH,
       height: IMAGE_RES.HEIGHT,

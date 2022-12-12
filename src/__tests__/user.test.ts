@@ -9,7 +9,7 @@ import * as authUtl from "../utils/authUtil";
 
 import { getMockToken } from "./mockUtils";
 
-import { MOCK_USER, MOCK_USERS } from "./mockData";
+import { MOCK_USER, MOCK_USERS, MOCK_USER_TOKEN_PAYLOAD } from "./mockData";
 
 let token = getMockToken();
 
@@ -207,6 +207,45 @@ describe("user signOut test", () => {
       .send();
 
     expect(res.body).toHaveProperty("success");
+    expect(res.status).toBe(200);
+  });
+});
+
+describe("user refresh token", () => {
+  test("user refresh token successfully", async () => {
+    const mockSession = jest.fn(
+      (): any =>
+        "eyJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6InBhc3N3b3JkIiwidXNlcklkIjoiMiIsImVtYWlsIjoiYWRtaW4tdGVzdEBnbWFpbC5jb20ifQ.whWPveDLjiRVRRht5IGq262YX2EQ_pcP483xSGzS5xQ"
+    );
+
+    const mockVerifyJWTToken = jest.fn((): any => MOCK_USER_TOKEN_PAYLOAD);
+
+    const mockGenerateAccessToken = jest.fn((): any => ({
+      payload: token,
+      expired: false,
+    }));
+
+    jest
+      .spyOn(RefreshTokenModel, "getRefreshToken")
+      .mockImplementation(() => mockSession());
+
+    jest
+      .spyOn(authUtl, "verifyJWT")
+      .mockImplementation(() => mockVerifyJWTToken());
+
+    jest
+      .spyOn(authUtl, "signJWT")
+      .mockImplementation(() => mockGenerateAccessToken());
+
+    const res = await request(app)
+      .post("/token/refresh")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        refreshToken:
+          "eyJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6InBhc3N3b3JkIiwidXNlcklkIjoiMiIsImVtYWlsIjoiYWRtaW4tdGVzdEBnbWFpbC5jb20ifQ.whWPveDLjiRVRRht5IGq262YX2EQ_pcP483xSGzS5xQ",
+      });
+
+    expect(res.body).toHaveProperty("accessToken");
     expect(res.status).toBe(200);
   });
 });

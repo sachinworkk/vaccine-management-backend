@@ -6,4 +6,9 @@ describe("file util tests", () => {
 
     expect(isValid).toBe(true);
   });
+  test("is invalid image", () => {
+    const isValid = isValidImage(".pdf");
+
+    expect(isValid).toBe(false);
+  });
 });
