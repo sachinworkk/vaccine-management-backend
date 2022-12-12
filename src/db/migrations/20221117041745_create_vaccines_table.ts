@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable("vaccines", (table) => {
     table.increments("id").primary().unsigned();
     table.string("name").notNullable();
-    table.string("description").notNullable();
+    table.text("description").notNullable();
     table.integer("number_of_doses").notNullable();
     table.boolean("is_mandatory").defaultTo(false);
     table.string("vaccine_image_url").defaultTo("");

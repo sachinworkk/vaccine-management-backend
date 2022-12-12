@@ -5,4 +5,5 @@ module.exports = {
   testMatch: ["**/**/*.test.ts"],
   verbose: true,
   forceExit: true,
+  coveragePathIgnorePatterns: ["<rootDir>/src/models/*", "<rootDir>/src/db/*"],
 };

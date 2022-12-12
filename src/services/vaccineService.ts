@@ -53,7 +53,7 @@ export const createVaccine = async (vaccinePayload: VaccinePayload) => {
 
   if (vaccinePayload.file) {
     imageURL = (await uploadImageToCloudinary(
-      vaccinePayload?.file,
+      vaccinePayload?.file?.buffer,
       IMAGE_UPLOAD_FOLDERS.VACCINE
     )) as string;
   }
@@ -90,7 +90,7 @@ export const updateVaccine = async (
 
   if (vaccinePayload?.file) {
     imageURL = (await uploadImageToCloudinary(
-      vaccinePayload?.file,
+      vaccinePayload?.file?.buffer,
       IMAGE_UPLOAD_FOLDERS.VACCINE
     )) as string;
   }
