@@ -19,6 +19,9 @@ import * as routes from "./constants/urls";
 import { errorHandler } from "./middlewares/errorHandler";
 import { deserializeUser } from "./middlewares/deserializeUser";
 
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
 declare global {
   namespace Express {
     interface Request {
@@ -29,6 +32,21 @@ declare global {
 
 const app = express();
 
+const options = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Vaccine Management REST API Documentation",
+      version: "1.0.0",
+    },
+    schemes: ["http", "https"],
+    servers: [{ url: process.env.BASE_URL }],
+  },
+  apis: [`${__dirname}/routes/*.ts`, "./dist/routes/*.js"],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
 dotenv.config();
 
 app.use(
@@ -36,6 +54,8 @@ app.use(
     origin: process.env.ORIGIN,
   })
 );
+
+app.use(routes.API_DOCS, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(cookieParser());
 
