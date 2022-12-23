@@ -4,7 +4,7 @@ The REST API for the Vaccine Management System.
 
 ## Installation
 
-Make user you have `Node.js` ,`Yarn` and `PostgreSQL` database installed.
+Make sure you have `Node.js` ,`Yarn` and `PostgreSQL` database installed.
 `Yarn` is the recommended package manager.
 
 ```bash
