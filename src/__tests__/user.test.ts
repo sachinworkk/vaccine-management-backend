@@ -17,10 +17,12 @@ const checkIfUserExists = (email: String) => {
   return MOCK_USERS.some((user) => email === user.email);
 };
 
+const findUserByEmail = (userToCheck: any) => {
+  return MOCK_USERS.find((user) => userToCheck.email === user.email);
+};
+
 const verifyPassword = (userToCheck: any) => {
-  const userWithUsername: any = MOCK_USERS.find(
-    (user) => userToCheck.email === user.email
-  );
+  const userWithUsername: any = findUserByEmail(userToCheck);
 
   return userWithUsername.password === userToCheck.password;
 };
@@ -167,29 +169,49 @@ describe("user signIn test", () => {
 
     const res = await request(app).post("/signIn").send(loginCredentials);
 
+    expect(res.body).toMatchObject({
+      details: "Username not found",
+    });
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("details");
   });
 
   test("user signin invalid password", async () => {
     const loginCredentials = {
-      email: "admins@gmail.com",
+      email: "admin-test@gmail.com",
       password: "password123",
     };
 
     const mockRefreshToken =
       "eyJhbGciOiJIUzI1NiJ9.eyJwYXNzd29yZCI6InBhc3N3b3JkIiwidXNlcklkIjoiMiIsImVtYWlsIjoiYWRtaW4tdGVzdEBnbWFpbC5jb20ifQ.whWPveDLjiRVRRht5IGq262YX2EQ_pcP483xSGzS5xQ";
 
+    const mockIfUserAlreadyExists = jest.fn((): any =>
+      checkIfUserExists(loginCredentials.email)
+    );
+
     const mockCreateRefreshToken = jest.fn((): any => mockRefreshToken);
+
+    const mockPasswordVerification = jest.fn((): any =>
+      verifyPassword(loginCredentials)
+    );
+
+    jest
+      .spyOn(UserModel, "getUserByEmail")
+      .mockImplementation(() => mockIfUserAlreadyExists());
 
     jest
       .spyOn(RefreshTokenModel, "createRefreshToken")
       .mockImplementation(() => mockCreateRefreshToken());
 
+    jest
+      .spyOn(authUtl, "verifyPassword")
+      .mockImplementation(() => mockPasswordVerification());
+
     const res = await request(app).post("/signIn").send(loginCredentials);
 
+    expect(res.body).toMatchObject({
+      details: "Invalid username or password",
+    });
     expect(res.status).toBe(400);
-    expect(res.body).toHaveProperty("details");
   });
 });
 

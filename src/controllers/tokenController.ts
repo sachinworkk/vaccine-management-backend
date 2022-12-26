@@ -31,7 +31,7 @@ export const refreshToken = tryCatch(async (req: Request, res: Response) => {
   );
 
   if (!refreshTokenDecodedPayload) {
-    throw new AppError(401, "Invalid refresh token");
+    throw new AppError(401, "Refresh token cannot be decoded");
   }
 
   const { iat, exp, ...userPayload } =
