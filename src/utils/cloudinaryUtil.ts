@@ -3,6 +3,8 @@ import streamifier from "streamifier";
 
 import cloudinary from "../configs/cloudinary";
 
+import { AppError } from "./../misc/appError";
+
 import { IMAGE_RES, IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
 
 /**
@@ -56,14 +58,13 @@ export const uploadImageToCloudinary = async (file: Buffer, folder: string) => {
 export const deleteImage = async (fileString: string, folder: string) => {
   try {
     const assetId = getImageCloudinaryId(fileString);
-    if (assetId !== "default") {
+    if (assetId) {
       const publicId = `${IMAGE_UPLOAD_FOLDERS.ROOT}/${folder}/${assetId}`;
 
       const deleteResponse = await cloudinary.uploader.destroy(publicId);
       return deleteResponse.result;
     }
-    return "ok";
   } catch {
-    throw Error("Failed to delete the image");
+    throw new AppError(500, "Failed to delete the image");
   }
 };
