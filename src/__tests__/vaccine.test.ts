@@ -50,6 +50,26 @@ describe("get vaccine test", () => {
 });
 
 describe("create vaccine test", () => {
+  test("create vaccine with invalid data", async () => {
+    const mockCreateVaccine = jest.fn((): any => MOCK_VACCINE);
+
+    jest
+      .spyOn(VaccineModel, "createVaccine")
+      .mockImplementation(() => mockCreateVaccine());
+
+    const res = await request(app)
+      .post("/vaccine")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        ...MOCK_VACCINE,
+        name: 123,
+        description: 123,
+        numberOfDoses: "abcd",
+      });
+
+    expect(res.body).toHaveProperty("type", "ValidationError");
+    expect(res.status).toBe(400);
+  });
   test("create vaccine with image url", async () => {
     const mockCreateVaccine = jest.fn((): any => MOCK_VACCINE);
 
@@ -68,6 +88,26 @@ describe("create vaccine test", () => {
 });
 
 describe("update vaccine test", () => {
+  test("update vaccine with invalid data", async () => {
+    const mockCreateVaccine = jest.fn((): any => MOCK_VACCINE);
+
+    jest
+      .spyOn(VaccineModel, "createVaccine")
+      .mockImplementation(() => mockCreateVaccine());
+
+    const res = await request(app)
+      .put("/vaccine/14")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        ...MOCK_VACCINE,
+        name: 123,
+        description: 123,
+        numberOfDoses: "abcd",
+      });
+
+    expect(res.body).toHaveProperty("type", "ValidationError");
+    expect(res.status).toBe(400);
+  });
   test("update vaccine with image url", async () => {
     const mockUpdateVaccine = jest.fn((): any => MOCK_VACCINE);
 
@@ -112,5 +152,20 @@ describe("delete vaccine test", () => {
 
     expect(res.body).toHaveProperty("message");
     expect(res.status).toBe(200);
+  });
+  test("vaccine not found", async () => {
+    const mockGetVaccine = jest.fn((id: number): any => getVaccine(id));
+
+    jest
+      .spyOn(VaccineModel, "getVaccineById")
+      .mockImplementation((id) => mockGetVaccine(parseInt(id, 100)));
+
+    const res = await request(app)
+      .delete("/vaccine/14")
+      .set("Authorization", `Bearer ${token}`)
+      .send();
+
+    expect(res.body).toMatchObject({ details: "Vaccine not found" });
+    expect(res.status).toBe(400);
   });
 });
