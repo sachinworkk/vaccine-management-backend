@@ -6,7 +6,7 @@ import { AppError } from "./../misc/appError";
 
 import { validateVaccine } from "./../schemas/vaccineSchema";
 
-import { deleteImage, uploadImageToCloudinary } from "../utils/cloudinaryUtil";
+import { FileHandlerService } from "./fileHandlerService";
 
 import { IMAGE_UPLOAD_FOLDERS } from "../constants/constants";
 
@@ -52,7 +52,7 @@ export const createVaccine = async (vaccinePayload: VaccinePayload) => {
   let imageURL = "";
 
   if (vaccinePayload.file) {
-    imageURL = (await uploadImageToCloudinary(
+    imageURL = (await FileHandlerService.uploadFile(
       vaccinePayload?.file?.buffer,
       IMAGE_UPLOAD_FOLDERS.VACCINE
     )) as string;
@@ -88,8 +88,8 @@ export const updateVaccine = async (
 
   let imageURL = vaccinePayload?.vaccineImageUrl;
 
-  if (vaccinePayload?.file) {
-    imageURL = (await uploadImageToCloudinary(
+  if (vaccinePayload.file) {
+    imageURL = (await FileHandlerService.uploadFile(
       vaccinePayload?.file?.buffer,
       IMAGE_UPLOAD_FOLDERS.VACCINE
     )) as string;
@@ -125,7 +125,7 @@ export const deleteVaccine = async (vaccineId: string) => {
   await VaccineModel.deleteVaccine(vaccineId);
 
   if (fetchedVaccine?.vaccineImageUrl) {
-    await deleteImage(
+    await FileHandlerService.deleteFile(
       fetchedVaccine?.vaccineImageUrl,
       IMAGE_UPLOAD_FOLDERS.VACCINE
     );
