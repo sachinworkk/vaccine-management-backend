@@ -1,7 +1,10 @@
-import { AppError } from "./../misc/appError";
 import { NextFunction, Request, Response } from "express";
 
 import { verifyJWT } from "./../utils/authUtil";
+
+import { AppError } from "./../misc/appError";
+
+import { STATUS_CODE } from "./../constants/constants";
 
 /**
  * Generates new access token from refresh token and
@@ -21,7 +24,7 @@ export const deserializeUser = async (
     const accessToken = req.headers?.authorization?.split(" ")?.[1];
 
     if (!accessToken) {
-      throw new AppError(401, "Invalid session");
+      throw new AppError(STATUS_CODE.UNAUTHORIZED, "Invalid session");
     }
 
     const { payload, expired } = verifyJWT(
@@ -30,7 +33,7 @@ export const deserializeUser = async (
     );
 
     if (expired) {
-      throw new AppError(401, "Invalid session");
+      throw new AppError(STATUS_CODE.UNAUTHORIZED, "Invalid session");
     }
 
     // For a valid access token
