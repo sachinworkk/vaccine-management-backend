@@ -1,10 +1,11 @@
-import { AppError } from "./../misc/appError";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 import RefreshTokenModel from "../models/refreshTokenModel";
 
-import { tryCatch } from "./../utils/tryCatch";
+import { tryCatch } from "../utils/wrapperFunctions";
 import { verifyJWT, signJWT } from "./../utils/authUtil";
+
+import { AppError } from "./../misc/appError";
 
 import { UserPayloadDecodedFromToken } from "./../types/userPayloadDecodedFromToken";
 

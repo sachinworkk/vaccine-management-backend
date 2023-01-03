@@ -8,7 +8,7 @@ import {
   getAllVaccines,
 } from "../services/vaccineService";
 
-import { tryCatch } from "./../utils/tryCatch";
+import { tryCatch } from "../utils/wrapperFunctions";
 
 import { VaccinePayload } from "../types/vaccine";
 import { RequestWithUser } from "../types/requestWIthUser";

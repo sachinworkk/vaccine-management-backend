@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 import { UserSigningUp, UserLoginCredentials } from "../types/user";
 
-import { tryCatch } from "./../utils/tryCatch";
+import { tryCatch } from "../utils/wrapperFunctions";
 
 import { STATUS_CODE } from "../constants/constants";
 
