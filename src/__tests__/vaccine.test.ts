@@ -6,9 +6,9 @@ import VaccineModel from "../models/vaccineModel";
 
 import { getMockToken } from "./mockUtils";
 
-import * as cloudinaryUtil from "../utils/cloudinaryUtil";
-
 import { MOCK_VACCINE, MOCK_VACCINES } from "./mockData";
+
+import { FileHandlerService } from "../services/fileHandlerService";
 
 let token = getMockToken();
 
@@ -80,7 +80,7 @@ describe("create vaccine test", () => {
       .mockImplementation(() => mockCreateVaccine());
 
     jest
-      .spyOn(cloudinaryUtil, "uploadImageToCloudinary")
+      .spyOn(FileHandlerService, "uploadFile")
       .mockImplementation(() => mockImageUpload());
 
     request(app)
@@ -150,7 +150,7 @@ describe("update vaccine test", () => {
       .mockImplementation(() => mockUpdateVaccine());
 
     jest
-      .spyOn(cloudinaryUtil, "uploadImageToCloudinary")
+      .spyOn(FileHandlerService, "uploadFile")
       .mockImplementation(() => mockImageUpload());
 
     request(app)
@@ -191,7 +191,7 @@ describe("delete vaccine test", () => {
       .mockImplementation((id) => mockDeleteVaccine(id));
 
     jest
-      .spyOn(cloudinaryUtil, "deleteImage")
+      .spyOn(FileHandlerService, "deleteFile")
       .mockImplementation(() => mockDeleteImage());
 
     const res = await request(app)

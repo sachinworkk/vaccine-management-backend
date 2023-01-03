@@ -18,23 +18,14 @@ const router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *              refreshToken:
- *                  type: string
- *                  description: The user's refresh token.
- *                  example: zxczxczxSDSDsdxczczxdasdDSAFDSA
+ *             $ref: '#/components/schemas/RefreshToken'
  *     responses:
  *       200:
  *         description: New Access token generated
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 accessToken:
- *                   type: string
- *                   example: asdaxczxfadsASDASDASDZXCZXCzxc
+ *               $ref: '#/components/schemas/AccessToken'
  */
 router.post(routes.REFRESH_TOKEN, tokenController.refreshToken);
 

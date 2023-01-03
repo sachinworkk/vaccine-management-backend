@@ -1,10 +1,12 @@
-import { AppError } from "./../misc/appError";
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
 import RefreshTokenModel from "../models/refreshTokenModel";
 
-import { tryCatch } from "./../utils/tryCatch";
+import { tryCatch } from "../utils/wrapperFunctions";
 import { verifyJWT, signJWT } from "./../utils/authUtil";
+import { sendHttpResponse } from "../utils/responseHandler";
+
+import { AppError } from "./../misc/appError";
 
 import { UserPayloadDecodedFromToken } from "./../types/userPayloadDecodedFromToken";
 
@@ -43,7 +45,7 @@ export const refreshToken = tryCatch(async (req: Request, res: Response) => {
     JWT_SIGN_AGE.ACCESS_TOKEN
   );
 
-  res.status(STATUS_CODE.SUCCESS).send({
+  sendHttpResponse(res, STATUS_CODE.SUCCESS, {
     accessToken: newAccessToken,
   });
 });

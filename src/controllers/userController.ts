@@ -3,7 +3,8 @@ import { Request, Response } from "express";
 
 import { UserSigningUp, UserLoginCredentials } from "../types/user";
 
-import { tryCatch } from "./../utils/tryCatch";
+import { tryCatch } from "../utils/wrapperFunctions";
+import { sendHttpResponse } from "../utils/responseHandler";
 
 import { STATUS_CODE } from "../constants/constants";
 
@@ -20,7 +21,7 @@ export const signUp = tryCatch(async (req: Request, res: Response) => {
 
   const signedUpUser = await createUser(userSignUpData);
 
-  res.status(STATUS_CODE.SUCCESS).send(signedUpUser);
+  sendHttpResponse(res, STATUS_CODE.SUCCESS, signedUpUser);
 });
 
 /**
@@ -36,9 +37,12 @@ export const signIn = tryCatch(async (req: Request, res: Response) => {
     userLoginCredentials
   );
 
-  res
-    .status(STATUS_CODE.SUCCESS)
-    .send({ user, accessToken, refreshToken, message });
+  sendHttpResponse(res, STATUS_CODE.SUCCESS, {
+    user,
+    accessToken,
+    refreshToken,
+    message,
+  });
 });
 
 /**
@@ -50,5 +54,5 @@ export const signIn = tryCatch(async (req: Request, res: Response) => {
 export const signOut = tryCatch(async (req: Request, res: Response) => {
   await signOutUser(req.user as JwtPayload);
 
-  res.status(STATUS_CODE.SUCCESS).send({ success: true });
+  sendHttpResponse(res, STATUS_CODE.SUCCESS, { success: true });
 });

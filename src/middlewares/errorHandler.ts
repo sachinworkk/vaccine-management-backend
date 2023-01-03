@@ -2,6 +2,10 @@ import Joi from "joi";
 
 import { Request, Response, NextFunction } from "express";
 
+import { STATUS_CODE } from "./../constants/constants";
+
+import { sendHttpResponse } from "../utils/responseHandler";
+
 import { AppError } from "./../misc/appError";
 
 export const errorHandler = (
@@ -11,7 +15,7 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   if (error instanceof Joi.ValidationError) {
-    return res.status(400).send({
+    sendHttpResponse(res, STATUS_CODE.BAD_REQUEST, {
       type: "ValidationError",
       details: error.details.map((error) => ({
         key: error.path?.[0],
@@ -21,10 +25,10 @@ export const errorHandler = (
   }
 
   if (error instanceof AppError) {
-    return res.status(error.status).json({
+    sendHttpResponse(res, error.status, {
       details: error.message,
     });
   }
 
-  return res.status(400).json({ details: error.message });
+  sendHttpResponse(res, STATUS_CODE.BAD_REQUEST, { details: error.message });
 };

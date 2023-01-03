@@ -8,7 +8,8 @@ import {
   getAllVaccines,
 } from "../services/vaccineService";
 
-import { tryCatch } from "./../utils/tryCatch";
+import { tryCatch } from "../utils/wrapperFunctions";
+import { sendHttpResponse } from "../utils/responseHandler";
 
 import { VaccinePayload } from "../types/vaccine";
 import { RequestWithUser } from "../types/requestWIthUser";
@@ -26,7 +27,7 @@ export const getVaccines = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const allVaccines = await getAllVaccines();
 
-    res.status(STATUS_CODE.SUCCESS).send(allVaccines);
+    sendHttpResponse(res, STATUS_CODE.SUCCESS, allVaccines);
   }
 );
 
@@ -41,7 +42,7 @@ export const getVaccineById = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const vaccine = await getVaccine(req.params.id);
 
-    res.status(STATUS_CODE.SUCCESS).send(vaccine);
+    sendHttpResponse(res, STATUS_CODE.SUCCESS, vaccine);
   }
 );
 
@@ -62,7 +63,7 @@ export const createVaccines = tryCatch(
 
     const createdVaccine = await createVaccine(vaccinePayload);
 
-    res.status(STATUS_CODE.SUCCESS).send(createdVaccine);
+    sendHttpResponse(res, STATUS_CODE.SUCCESS, createdVaccine);
   }
 );
 
@@ -86,7 +87,7 @@ export const updateVaccines = tryCatch(
       req.params.id
     );
 
-    res.status(STATUS_CODE.SUCCESS).send(updatedVaccine);
+    sendHttpResponse(res, STATUS_CODE.SUCCESS, updatedVaccine);
   }
 );
 
@@ -101,6 +102,6 @@ export const deleteVaccines = tryCatch(
   async (req: Request, res: Response, next: NextFunction) => {
     const isVaccineDeleted = await deleteVaccine(req.params.id);
 
-    res.status(STATUS_CODE.SUCCESS).send(isVaccineDeleted);
+    sendHttpResponse(res, STATUS_CODE.SUCCESS, isVaccineDeleted);
   }
 );
